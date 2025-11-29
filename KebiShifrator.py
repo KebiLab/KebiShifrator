@@ -22,6 +22,74 @@ import hashlib
 import logging
 
 
+translations = {
+    'en': {
+        'window_title': 'KebiShifrator - Made by KebiLab',
+        'key_management': 'Key Management',
+        'encryption': 'Encryption',
+        'decryption': 'Decryption',
+        'history': 'History',
+        'key_pair_name': 'Key Pair Name:',
+        'password': 'Password:',
+        'confirm_password': 'Confirm Password:',
+        'key_directory': 'Key Directory:',
+        'generate_key_pair': 'Generate Key Pair',
+        'select_file': 'Select File:',
+        'no_file_selected': 'No file selected',
+        'select_public_key': 'Select Public Key:',
+        'output_file_path': 'Output File Path:',
+        'encrypt': 'Encrypt',
+        'select_encrypted_file': 'Select Encrypted File:',
+        'select_private_key': 'Select Private Key:',
+        'decrypt': 'Decrypt',
+        'date': 'Date',
+        'operation': 'Operation',
+        'file': 'File',
+        'status': 'Status',
+        'language': 'Language',
+        'theme': 'Theme',
+        'english': 'English',
+        'russian': 'Русский',
+        'light': 'Light',
+        'dark': 'Dark',
+        'browse': 'Browse',
+        'ready': 'Ready'
+    },
+    'ru': {
+        'window_title': 'KebiShifrator - Создано KebiLab',
+        'key_management': 'Управление ключами',
+        'encryption': 'Шифрование',
+        'decryption': 'Дешифрование',
+        'history': 'История',
+        'key_pair_name': 'Имя пары ключей:',
+        'password': 'Пароль:',
+        'confirm_password': 'Подтвердите пароль:',
+        'key_directory': 'Директория ключей:',
+        'generate_key_pair': 'Создать пару ключей',
+        'select_file': 'Выберите файл:',
+        'no_file_selected': 'Файл не выбран',
+        'select_public_key': 'Выберите публичный ключ:',
+        'output_file_path': 'Путь выходного файла:',
+        'encrypt': 'Зашифровать',
+        'select_encrypted_file': 'Выберите зашифрованный файл:',
+        'select_private_key': 'Выберите приватный ключ:',
+        'decrypt': 'Расшифровать',
+        'date': 'Дата',
+        'operation': 'Операция',
+        'file': 'Файл',
+        'status': 'Статус',
+        'language': 'Язык',
+        'theme': 'Тема',
+        'english': 'Английский',
+        'russian': 'Русский',
+        'light': 'Светлая',
+        'dark': 'Тёмная',
+        'browse': 'Обзор',
+        'ready': 'Готов'
+    }
+}
+
+
 def set_window_app_id():
     try:
         myappid = 'kebilab.kebishifrator.1.0'
@@ -53,21 +121,25 @@ class KebiShifrator(QMainWindow):
         else:
             print("Warning: Icon not found, using default")
         
-        self.setWindowTitle("KebiShifrator - Made by KebiLab")
+        self.current_lang = 'en'
+
+        self.setWindowTitle(self.tr('window_title'))
         self.setGeometry(100, 100, 800, 600)
 
         self.tab_widget = QTabWidget()
         self.setCentralWidget(self.tab_widget)
+
+        self.setup_menu()
 
         self.key_management_tab = QWidget()
         self.encryption_tab = QWidget()
         self.decryption_tab = QWidget()
         self.history_tab = QWidget()
 
-        self.tab_widget.addTab(self.key_management_tab, "Key Management")
-        self.tab_widget.addTab(self.encryption_tab, "Encryption")
-        self.tab_widget.addTab(self.decryption_tab, "Decryption")
-        self.tab_widget.addTab(self.history_tab, "History")
+        self.tab_widget.addTab(self.key_management_tab, self.tr('key_management'))
+        self.tab_widget.addTab(self.encryption_tab, self.tr('encryption'))
+        self.tab_widget.addTab(self.decryption_tab, self.tr('decryption'))
+        self.tab_widget.addTab(self.history_tab, self.tr('history'))
 
         # Configure logging
         logging.basicConfig(level=logging.INFO,
@@ -77,12 +149,146 @@ class KebiShifrator(QMainWindow):
 
         self.status_bar = QStatusBar()
         self.setStatusBar(self.status_bar)
-        self.status_bar.showMessage("Ready")
+        self.status_bar.showMessage(self.tr('ready'))
 
         # Add progress bar to status bar
         self.progress_bar = QProgressBar()
         self.progress_bar.setVisible(False)
         self.status_bar.addPermanentWidget(self.progress_bar)
+
+    def tr(self, key):
+        return translations[self.current_lang].get(key, key)
+
+    def setup_menu(self):
+        self.language_menu = self.menuBar().addMenu('Language')
+        self.english_action = self.language_menu.addAction('English')
+        self.russian_action = self.language_menu.addAction('Русский')
+        self.english_action.triggered.connect(lambda: self.set_language('en'))
+        self.russian_action.triggered.connect(lambda: self.set_language('ru'))
+        self.theme_menu = self.menuBar().addMenu('Theme')
+        self.light_action = self.theme_menu.addAction('Light')
+        self.dark_action = self.theme_menu.addAction('Dark')
+        self.light_action.triggered.connect(lambda: self.set_theme('light'))
+        self.dark_action.triggered.connect(lambda: self.set_theme('dark'))
+
+    def set_language(self, lang):
+        self.current_lang = lang
+        self.retranslate_ui()
+
+    def set_theme(self, theme):
+        if theme == 'dark':
+            QApplication.instance().setStyleSheet(qdarkstyle.load_stylesheet_pyqt6())
+        else:
+            # Light theme with white background
+            light_stylesheet = """
+            QWidget {
+                background-color: #f0f0f0;
+                color: #000000;
+            }
+            QMainWindow {
+                background-color: #ffffff;
+            }
+            QTabWidget::pane {
+                border: 1px solid #cccccc;
+                background-color: #ffffff;
+            }
+            QTabBar::tab {
+                background-color: #e0e0e0;
+                color: #000000;
+                padding: 8px;
+                border: 1px solid #cccccc;
+            }
+            QTabBar::tab:selected {
+                background-color: #ffffff;
+                color: #000000;
+            }
+            QPushButton {
+                background-color: #e0e0e0;
+                color: #000000;
+                border: 1px solid #cccccc;
+                padding: 5px;
+            }
+            QPushButton:hover {
+                background-color: #d0d0d0;
+            }
+            QLineEdit, QTextEdit, QComboBox {
+                background-color: #ffffff;
+                color: #000000;
+                border: 1px solid #cccccc;
+            }
+            QLabel {
+                color: #000000;
+            }
+            QTableWidget {
+                background-color: #ffffff;
+                color: #000000;
+                gridline-color: #cccccc;
+            }
+            QHeaderView::section {
+                background-color: #e0e0e0;
+                color: #000000;
+                border: 1px solid #cccccc;
+            }
+            QStatusBar {
+                background-color: #f0f0f0;
+                color: #000000;
+            }
+            QMenuBar {
+                background-color: #f0f0f0;
+                color: #000000;
+            }
+            QMenuBar::item {
+                background-color: transparent;
+                color: #000000;
+            }
+            QMenuBar::item:selected {
+                background-color: #d0d0d0;
+            }
+            QMenu {
+                background-color: #ffffff;
+                color: #000000;
+                border: 1px solid #cccccc;
+            }
+            QMenu::item:selected {
+                background-color: #e0e0e0;
+            }
+            """
+            QApplication.instance().setStyleSheet(light_stylesheet)
+
+    def retranslate_ui(self):
+        self.setWindowTitle(self.tr('window_title'))
+        self.tab_widget.setTabText(0, self.tr('key_management'))
+        self.tab_widget.setTabText(1, self.tr('encryption'))
+        self.tab_widget.setTabText(2, self.tr('decryption'))
+        self.tab_widget.setTabText(3, self.tr('history'))
+        self.key_name_label.setText(self.tr('key_pair_name'))
+        self.password_label.setText(self.tr('password'))
+        self.confirm_password_label.setText(self.tr('confirm_password'))
+        self.key_directory_label.setText(self.tr('key_directory'))
+        self.key_directory_button.setText(self.tr('browse'))
+        self.generate_key_button.setText(self.tr('generate_key_pair'))
+        self.encryption_file_label.setText(self.tr('select_file'))
+        self.encryption_file_button.setText(self.tr('browse'))
+        self.encryption_file_info.setText(self.tr('no_file_selected'))
+        self.encryption_key_label.setText(self.tr('select_public_key'))
+        self.encryption_output_label.setText(self.tr('output_file_path'))
+        self.encryption_output_path_button.setText(self.tr('browse'))
+        self.encrypt_button.setText(self.tr('encrypt'))
+        self.decryption_file_label.setText(self.tr('select_encrypted_file'))
+        self.decryption_file_button.setText(self.tr('browse'))
+        self.decryption_key_label.setText(self.tr('select_private_key'))
+        self.decryption_password_label.setText(self.tr('password'))
+        self.decryption_output_label.setText(self.tr('output_file_path'))
+        self.decryption_output_path_button.setText(self.tr('browse'))
+        self.decrypt_button.setText(self.tr('decrypt'))
+        self.history_table.setHorizontalHeaderLabels([self.tr('date'), self.tr('operation'), self.tr('file'), self.tr('status')])
+        self.status_bar.showMessage(self.tr('ready'))
+        self.language_menu.setTitle(self.tr('language'))
+        self.theme_menu.setTitle(self.tr('theme'))
+        self.english_action.setText(self.tr('english'))
+        self.russian_action.setText(self.tr('russian'))
+        self.light_action.setText(self.tr('light'))
+        self.dark_action.setText(self.tr('dark'))
 
 
 
@@ -97,32 +303,36 @@ class KebiShifrator(QMainWindow):
         layout = QGridLayout()
 
         # Key Pair Name
-        layout.addWidget(QLabel("Key Pair Name:"), 0, 0)
+        self.key_name_label = QLabel(self.tr('key_pair_name'))
+        layout.addWidget(self.key_name_label, 0, 0)
         self.key_name_input = QLineEdit()
         layout.addWidget(self.key_name_input, 0, 1)
 
         # Password
-        layout.addWidget(QLabel("Password:"), 1, 0)
+        self.password_label = QLabel(self.tr('password'))
+        layout.addWidget(self.password_label, 1, 0)
         self.password_input = QLineEdit()
         self.password_input.setEchoMode(QLineEdit.EchoMode.Password)
         layout.addWidget(self.password_input, 1, 1)
 
         # Confirm Password
-        layout.addWidget(QLabel("Confirm Password:"), 2, 0)
+        self.confirm_password_label = QLabel(self.tr('confirm_password'))
+        layout.addWidget(self.confirm_password_label, 2, 0)
         self.confirm_password_input = QLineEdit()
         self.confirm_password_input.setEchoMode(QLineEdit.EchoMode.Password)
         layout.addWidget(self.confirm_password_input, 2, 1)
 
         # Key Directory
-        layout.addWidget(QLabel("Key Directory:"), 3, 0)
+        self.key_directory_label = QLabel(self.tr('key_directory'))
+        layout.addWidget(self.key_directory_label, 3, 0)
         self.key_directory_input = QLineEdit()
         layout.addWidget(self.key_directory_input, 3, 1)
-        self.key_directory_button = QPushButton("Browse")
+        self.key_directory_button = QPushButton(self.tr('browse'))
         self.key_directory_button.clicked.connect(self.select_key_directory)
         layout.addWidget(self.key_directory_button, 3, 2)
 
         # Generate Key Button
-        self.generate_key_button = QPushButton("Generate Key Pair")
+        self.generate_key_button = QPushButton(self.tr('generate_key_pair'))
         self.generate_key_button.clicked.connect(self.generate_key_pair)
         layout.addWidget(self.generate_key_button, 4, 0, 1, 3)
 
@@ -132,34 +342,37 @@ class KebiShifrator(QMainWindow):
         layout = QGridLayout()
 
         # Select File
-        layout.addWidget(QLabel("Select File:"), 0, 0)
+        self.encryption_file_label = QLabel(self.tr('select_file'))
+        layout.addWidget(self.encryption_file_label, 0, 0)
         self.encryption_file_input = QLineEdit()
         layout.addWidget(self.encryption_file_input, 0, 1)
-        self.encryption_file_button = QPushButton("Browse")
+        self.encryption_file_button = QPushButton(self.tr('browse'))
         self.encryption_file_button.clicked.connect(self.select_encryption_file)
         layout.addWidget(self.encryption_file_button, 0, 2)
 
         # File Information
-        self.encryption_file_info = QLabel("No file selected")
+        self.encryption_file_info = QLabel(self.tr('no_file_selected'))
         layout.addWidget(self.encryption_file_info, 1, 0, 1, 3)
 
         # Select Public Key
-        layout.addWidget(QLabel("Select Public Key:"), 2, 0)
+        self.encryption_key_label = QLabel(self.tr('select_public_key'))
+        layout.addWidget(self.encryption_key_label, 2, 0)
         self.encryption_key_combo = QComboBox()
         layout.addWidget(self.encryption_key_combo, 2, 1, 1, 2)
 
 
 
         # Output File Path
-        layout.addWidget(QLabel("Output File Path:"), 3, 0)
+        self.encryption_output_label = QLabel(self.tr('output_file_path'))
+        layout.addWidget(self.encryption_output_label, 3, 0)
         self.encryption_output_path_input = QLineEdit()
         layout.addWidget(self.encryption_output_path_input, 3, 1)
-        self.encryption_output_path_button = QPushButton("Browse")
+        self.encryption_output_path_button = QPushButton(self.tr('browse'))
         self.encryption_output_path_button.clicked.connect(self.select_encryption_output_path)
         layout.addWidget(self.encryption_output_path_button, 3, 2)
 
         # Encrypt Button
-        self.encrypt_button = QPushButton("Encrypt")
+        self.encrypt_button = QPushButton(self.tr('encrypt'))
         self.encrypt_button.clicked.connect(self.encrypt_file)
         layout.addWidget(self.encrypt_button, 4, 0, 1, 3)
 
@@ -265,36 +478,40 @@ class KebiShifrator(QMainWindow):
         layout = QGridLayout()
 
         # Select Encrypted File
-        layout.addWidget(QLabel("Select Encrypted File:"), 0, 0)
+        self.decryption_file_label = QLabel(self.tr('select_encrypted_file'))
+        layout.addWidget(self.decryption_file_label, 0, 0)
         self.decryption_file_input = QLineEdit()
         layout.addWidget(self.decryption_file_input, 0, 1)
-        self.decryption_file_button = QPushButton("Browse")
+        self.decryption_file_button = QPushButton(self.tr('browse'))
         self.decryption_file_button.clicked.connect(self.select_decryption_file)
         layout.addWidget(self.decryption_file_button, 0, 2)
 
         # Select Private Key
-        layout.addWidget(QLabel("Select Private Key:"), 1, 0)
+        self.decryption_key_label = QLabel(self.tr('select_private_key'))
+        layout.addWidget(self.decryption_key_label, 1, 0)
         self.decryption_key_combo = QComboBox()
         layout.addWidget(self.decryption_key_combo, 1, 1, 1, 2)
 
 
 
         # Password
-        layout.addWidget(QLabel("Password:"), 2, 0)
+        self.decryption_password_label = QLabel(self.tr('password'))
+        layout.addWidget(self.decryption_password_label, 2, 0)
         self.decryption_password_input = QLineEdit()
         self.decryption_password_input.setEchoMode(QLineEdit.EchoMode.Password)
         layout.addWidget(self.decryption_password_input, 2, 1, 1, 2)
 
         # Output File Path
-        layout.addWidget(QLabel("Output File Path:"), 3, 0)
+        self.decryption_output_label = QLabel(self.tr('output_file_path'))
+        layout.addWidget(self.decryption_output_label, 3, 0)
         self.decryption_output_path_input = QLineEdit()
         layout.addWidget(self.decryption_output_path_input, 3, 1)
-        self.decryption_output_path_button = QPushButton("Browse")
+        self.decryption_output_path_button = QPushButton(self.tr('browse'))
         self.decryption_output_path_button.clicked.connect(self.select_decryption_output_path)
         layout.addWidget(self.decryption_output_path_button, 3, 2)
 
         # Decrypt Button
-        self.decrypt_button = QPushButton("Decrypt")
+        self.decrypt_button = QPushButton(self.tr('decrypt'))
         self.decrypt_button.clicked.connect(self.decrypt_file)
         layout.addWidget(self.decrypt_button, 4, 0, 1, 3)
 
@@ -427,7 +644,7 @@ class KebiShifrator(QMainWindow):
         # History Table
         self.history_table = QTableWidget()
         self.history_table.setColumnCount(4)
-        self.history_table.setHorizontalHeaderLabels(["Date", "Operation", "File", "Status"])
+        self.history_table.setHorizontalHeaderLabels([self.tr('date'), self.tr('operation'), self.tr('file'), self.tr('status')])
         self.history_table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
         layout.addWidget(self.history_table)
 

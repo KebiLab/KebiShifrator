@@ -1,9 +1,9 @@
 # KebiShifrator
 
-https://img.shields.io/badge/Python-3.8%252B-blue
-https://img.shields.io/badge/PyQt6-6.6.0-green
-https://img.shields.io/badge/cryptography-41.0.0-orange
-https://img.shields.io/badge/License-MIT-yellow
+[![Python 3.8+](https://img.shields.io/badge/Python-3.8%2B-blue)](https://www.python.org)
+[![PyQt6 6.6.0](https://img.shields.io/badge/PyQt6-6.6.0-green)](https://www.riverbankcomputing.com/software/pyqt/)
+[![cryptography 41.0.0](https://img.shields.io/badge/cryptography-41.0.0-orange)](https://cryptography.io)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow)](https://opensource.org/licenses/MIT)
 
 A professional desktop application for secure file encryption and decryption using hybrid cryptography (RSA + AES). Built with Python and PyQt6.
 
@@ -16,7 +16,8 @@ A professional desktop application for secure file encryption and decryption usi
 - **Key Derivation**: PBKDF2 with 480,000 iterations
 
 ### User Interface
-- **Modern Dark Theme**: Professional appearance
+- **Modern Themes**: Professional appearance. Light and Dark theme support
+- **Multi-language**: English and Russian interface
 - **Tab-based Layout**: Intuitive organization
 - **Progress Tracking**: Real-time progress bars
 - **Operation History**: Complete activity log
@@ -89,7 +90,10 @@ kebishifrator/
 ├── kebishifrator.py          # Main application
 ├── requirements.txt          # Dependencies
 ├── README.md                 # Documentation
-└── .gitignore               # Git ignore rules
+├── icon.ico                  # Application icon
+├── KebiShifrator.exe         # Application .exe file
+├── license.txt               # License file
+└── .gitignore                # Git ignore rules
 ```
 
 ## Security Notice
@@ -144,4 +148,10 @@ For issues and questions:
 
 ## Version
 
-Current version: 1.0.0
+Current version: 1.1.0
+
+# What's New in Version 1.1.0
+1. Added Light and Dark theme support
+2. Added multi-language interface (English/Russian)
+3. Improved user interface customization
+4. Enhanced user experience with theme switching
