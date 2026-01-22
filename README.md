@@ -145,13 +145,3 @@ For issues and questions:
 1. Check the troubleshooting section
 2. Review the code comments
 3. Ensure all dependencies are properly installed
-
-## Version
-
-Current version: 1.1.0
-
-# What's New in Version 1.1.0
-1. Added Light and Dark theme support
-2. Added multi-language interface (English/Russian)
-3. Improved user interface customization
-4. Enhanced user experience with theme switching
